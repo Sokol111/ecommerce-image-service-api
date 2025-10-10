@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.1
+  version: 1.0.2
   description: |
     API for image management in an e-commerce system using the **Draft → Promote** pattern.
 
@@ -499,15 +499,20 @@ components:
           $ref: '#/components/schemas/OwnerType'
         ownerId:
           type: string
+          minLength: 1
           description: Draft ID or owner ID
         filename:
           type: string
+          minLength: 1
           example: shoe.jpg
         contentType:
           type: string
+          enum: [image/jpeg, image/png, image/webp, image/avif]
           example: image/jpeg
         size:
           type: integer
+          minimum: 1
+          maximum: 10485760 # 10 MiB default limit; adjust as needed
           description: Size in bytes
         role:
           $ref: '#/components/schemas/ImageRole'
@@ -538,8 +543,10 @@ components:
           $ref: '#/components/schemas/OwnerType'
         ownerId:
           type: string
+          minLength: 1
         key:
           type: string
+          minLength: 1
           description: S3 key that was used for PUT
         tempId:
           type: string
@@ -548,6 +555,7 @@ components:
           type: string
         mime:
           type: string
+          enum: [image/jpeg, image/png, image/webp, image/avif]
         role:
           $ref: '#/components/schemas/ImageRole'
         checksum:
@@ -560,8 +568,10 @@ components:
       properties:
         fromDraft:
           type: string
+          minLength: 1
         toProduct:
           type: string
+          minLength: 1
         move:
           type: boolean
           default: true
