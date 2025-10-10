@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.0
+  version: 1.0.1
   description: |
     API for image management in an e-commerce system using the **Draft → Promote** pattern.
 
@@ -32,27 +32,8 @@ tags:
     description: Generate signed delivery URLs for imgproxy
   - name: internal
     description: Internal endpoints (queue, workers, webhooks)
-  - name: health
-    description: Service health check
 
 paths:
-  /healthz:
-    get:
-      tags: [health]
-      summary: Health check
-      operationId: healthz
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-
   /images/presign:
     post:
       tags: [presign]
