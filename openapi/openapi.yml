@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.2
+  version: 1.0.3
   description: |
     API for image management in an e-commerce system using the **Draft → Promote** pattern.
 
@@ -64,10 +64,6 @@ paths:
       responses:
         '200':
           description: Presigned URL created
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
           content:
             application/json:
               schema:
