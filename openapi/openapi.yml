@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.6
+  version: 1.0.7
   description: API for managing images
 paths:
   /images/presign:
@@ -397,7 +397,7 @@ components:
           type: integer
     Image:
       type: object
-      required: [id, ownerType, ownerId, role, key, alt, mime, size, status, createdAt, updatedAt]
+      required: [id, ownerType, ownerId, role, key, alt, mime, size, status, createdAt, modifiedAt]
       properties:
         id:
           type: string
@@ -433,7 +433,7 @@ components:
         createdAt:
           type: string
           format: date-time
-        updatedAt:
+        modifiedAt:
           type: string
           format: date-time
     ImagePatch:
