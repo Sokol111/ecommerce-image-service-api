@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.5
+  version: 1.0.6
   description: API for managing images
 paths:
   /images/presign:
@@ -42,7 +42,6 @@ paths:
                   value:
                     uploadUrl: "https://minio...X-Amz-Expires=900&X-Amz-Signature=..."
                     key: "product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg"
-                    tempId: "tmp_01KXYZ..."
                     expiresIn: 900
                     requiredHeaders:
                       Content-Type: image/jpeg
@@ -76,7 +75,6 @@ paths:
                   ownerType: productDraft
                   ownerId: dft_01JABCD12EF3G45H6JK7MN8PQ
                   key: product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg
-                  tempId: tmp_01KXYZ...
                   alt: "Black sneakers"
                   mime: image/jpeg
                   role: main
@@ -399,6 +397,7 @@ components:
           type: integer
     Image:
       type: object
+      required: [id, ownerType, ownerId, role, key, alt, mime, size, status, createdAt, updatedAt]
       properties:
         id:
           type: string
