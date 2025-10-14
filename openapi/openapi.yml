@@ -1,51 +1,20 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.3
-  description: |
-    API for image management in an e-commerce system using the **Draft → Promote** pattern.
-
-    Responsibilities:
-    - Generate presigned URLs for direct PUT uploads to MinIO/S3.
-    - Confirm uploads and persist image metadata to the database.
-    - Promote/attach images from a product draft to a final product.
-    - Read/update/delete image metadata.
-    - Generate signed delivery URLs for imgproxy.
-
-    Notes:
-    - No authentication is configured yet (public API for now). Add auth later when ready.
-    - Idempotency is supported via the `Idempotency-Key` header for POST/DELETE operations.
-servers:
-  - url: https://image-service.example.com
-    description: Production
-  - url: http://image-service.local
-    description: Local/dev
-
-tags:
-  - name: presign
-    description: Generate one-time presigned URLs for direct PUT uploads to S3/MinIO
-  - name: images
-    description: Image metadata — confirm, read, update, delete
-  - name: linking
-    description: Promote/attach images between a draft and a final product
-  - name: delivery
-    description: Generate signed delivery URLs for imgproxy
-  - name: internal
-    description: Internal endpoints (queue, workers, webhooks)
-
+  version: 1.0.5
+  description: API for managing images
 paths:
   /images/presign:
     post:
-      tags: [presign]
       summary: Create a presigned PUT URL for uploading an image to MinIO/S3
       operationId: createPresign
-      parameters:
-        - in: header
-          name: Idempotency-Key
-          schema:
-            type: string
-          required: false
-          description: Idempotency key for safe retries.
+      # parameters:
+      #   - in: header
+      #     name: Idempotency-Key
+      #     schema:
+      #       type: string
+      #     required: false
+      #     description: Idempotency key for safe retries.
       requestBody:
         required: true
         content:
@@ -86,16 +55,15 @@ paths:
 
   /images/confirm:
     post:
-      tags: [images]
       summary: Confirm upload (HEAD against S3), persist metadata
       operationId: confirmUpload
-      parameters:
-        - in: header
-          name: Idempotency-Key
-          schema:
-            type: string
-          required: false
-          description: Idempotency key for safe retries.
+      # parameters:
+        # - in: header
+        #   name: Idempotency-Key
+        #   schema:
+        #     type: string
+        #   required: false
+        #   description: Idempotency key for safe retries.
       requestBody:
         required: true
         content:
@@ -132,7 +100,6 @@ paths:
 
   /images:
     get:
-      tags: [images]
       summary: List/search images by owner/filters
       operationId: listImages
       parameters:
@@ -182,7 +149,6 @@ paths:
 
   /images/{id}:
     get:
-      tags: [images]
       summary: Get image metadata
       operationId: getImage
       parameters:
@@ -202,7 +168,6 @@ paths:
           description: Not found
 
     patch:
-      tags: [images]
       summary: Update image metadata (alt, role, order)
       operationId: updateImage
       parameters:
@@ -228,7 +193,6 @@ paths:
           description: Not found
 
     delete:
-      tags: [images]
       summary: Delete image (soft or hard, per policy)
       operationId: deleteImage
       parameters:
@@ -251,7 +215,6 @@ paths:
 
   /images/{id}/url:
     get:
-      tags: [delivery]
       summary: Generate a signed imgproxy URL for delivery with requested params
       operationId: getDeliveryUrl
       parameters:
@@ -324,15 +287,14 @@ paths:
 
   /images/promote:
     post:
-      tags: [linking]
       summary: Promote images from a product draft to a final product
       operationId: promoteImages
-      parameters:
-        - in: header
-          name: Idempotency-Key
-          schema:
-            type: string
-          required: false
+      # parameters:
+      #   - in: header
+      #     name: Idempotency-Key
+      #     schema:
+      #       type: string
+      #     required: false
       requestBody:
         required: true
         content:
@@ -374,7 +336,6 @@ paths:
 
   /internal/images/process:
     post:
-      tags: [internal]
       summary: Trigger (or retry) variant generation for an image
       operationId: processImage
       requestBody:
@@ -395,7 +356,6 @@ paths:
 
   /internal/webhook/s3:
     post:
-      tags: [internal]
       summary: MinIO/S3 event webhook (ObjectCreated/Delete) for auto-confirm/triggers
       operationId: s3Webhook
       requestBody:
@@ -489,7 +449,7 @@ components:
           description: Position in the product gallery
     PresignRequest:
       type: object
-      required: [ownerType, ownerId, filename, contentType, size]
+      required: [ownerType, ownerId, filename, contentType, size, role]
       properties:
         ownerType:
           $ref: '#/components/schemas/OwnerType'
@@ -514,6 +474,7 @@ components:
           $ref: '#/components/schemas/ImageRole'
     PresignResponse:
       type: object
+      required: [uploadUrl, key, expiresIn, requiredHeaders]
       properties:
         uploadUrl:
           type: string
@@ -521,9 +482,6 @@ components:
         key:
           type: string
           description: Final S3 key to PUT to
-        tempId:
-          type: string
-          description: Temporary ID for idempotency/confirm
         expiresIn:
           type: integer
           description: TTL in seconds
@@ -533,7 +491,7 @@ components:
             type: string
     ConfirmRequest:
       type: object
-      required: [ownerType, ownerId, key]
+      required: [ownerType, ownerId, key, alt, mime, role]
       properties:
         ownerType:
           $ref: '#/components/schemas/OwnerType'
@@ -544,9 +502,6 @@ components:
           type: string
           minLength: 1
           description: S3 key that was used for PUT
-        tempId:
-          type: string
-          nullable: true
         alt:
           type: string
         mime:
