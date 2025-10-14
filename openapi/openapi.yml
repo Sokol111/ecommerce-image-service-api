@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.9
+  version: 1.0.10
   description: API for managing images
 paths:
   /images/presign:
