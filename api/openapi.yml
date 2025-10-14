@@ -1,0 +1,552 @@
+openapi: 3.0.3
+info:
+  title: Image Service API
+  version: 1.0.7
+  description: API for managing images
+paths:
+  /images/presign:
+    post:
+      summary: Create a presigned PUT URL for uploading an image to MinIO/S3
+      operationId: createPresign
+      # parameters:
+      #   - in: header
+      #     name: Idempotency-Key
+      #     schema:
+      #       type: string
+      #     required: false
+      #     description: Idempotency key for safe retries.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PresignRequest'
+            examples:
+              draftExample:
+                value:
+                  ownerType: productDraft
+                  ownerId: dft_01JABCD12EF3G45H6JK7MN8PQ
+                  filename: shoe.jpg
+                  contentType: image/jpeg
+                  size: 183456
+                  role: main
+      responses:
+        '200':
+          description: Presigned URL created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignResponse'
+              examples:
+                ok:
+                  value:
+                    uploadUrl: "https://minio...X-Amz-Expires=900&X-Amz-Signature=..."
+                    key: "product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg"
+                    expiresIn: 900
+                    requiredHeaders:
+                      Content-Type: image/jpeg
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /images/confirm:
+    post:
+      summary: Confirm upload (HEAD against S3), persist metadata
+      operationId: confirmUpload
+      # parameters:
+        # - in: header
+        #   name: Idempotency-Key
+        #   schema:
+        #     type: string
+        #   required: false
+        #   description: Idempotency key for safe retries.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmRequest'
+            examples:
+              ok:
+                value:
+                  ownerType: productDraft
+                  ownerId: dft_01JABCD12EF3G45H6JK7MN8PQ
+                  key: product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg
+                  alt: "Black sneakers"
+                  mime: image/jpeg
+                  role: main
+      responses:
+        '201':
+          description: Image document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Object not found in storage (MinIO/S3)
+        '409':
+          description: Conflict (e.g., already confirmed)
+
+  /images:
+    get:
+      summary: List/search images by owner/filters
+      operationId: listImages
+      parameters:
+        - in: query
+          name: ownerType
+          schema:
+            $ref: '#/components/schemas/OwnerType'
+        - in: query
+          name: ownerId
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/ImageStatus'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  total:
+                    type: integer
+
+  /images/{id}:
+    get:
+      summary: Get image metadata
+      operationId: getImage
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          description: Not found
+
+    patch:
+      summary: Update image metadata (alt, role, order)
+      operationId: updateImage
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImagePatch'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          description: Not found
+
+    delete:
+      summary: Delete image (soft or hard, per policy)
+      operationId: deleteImage
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: hard
+          schema:
+            type: boolean
+            default: false
+            description: If true — delete objects in MinIO and remove DB record permanently
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Not found
+
+  /images/{id}/url:
+    get:
+      summary: Generate a signed imgproxy URL for delivery with requested params
+      operationId: getDeliveryUrl
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: variant
+          schema:
+            type: string
+            description: Name of a pre-generated variant (if exists)
+        - in: query
+          name: w
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: h
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: fit
+          schema:
+            type: string
+            enum: [cover, contain, fill, inside, outside]
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [original, webp, avif, jpeg, png]
+            default: original
+        - in: query
+          name: quality
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 85
+        - in: query
+          name: dpr
+          schema:
+            type: number
+            minimum: 0.5
+            maximum: 3
+            default: 1
+        - in: query
+          name: ttlSeconds
+          schema:
+            type: integer
+            minimum: 0
+            description: If imgproxy is configured with signature expiration, an `expires` param will be included
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  expiresAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+
+  /images/promote:
+    post:
+      summary: Promote images from a product draft to a final product
+      operationId: promoteImages
+      # parameters:
+      #   - in: header
+      #     name: Idempotency-Key
+      #     schema:
+      #       type: string
+      #     required: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromoteRequest'
+            examples:
+              all:
+                value:
+                  fromDraft: dft_01JABCD12EF3G45H6JK7MN8PQ
+                  toProduct: prd_01KXYZABCD1234
+                  move: true
+              subset:
+                value:
+                  fromDraft: dft_01JABCD12EF3G45H6JK7MN8PQ
+                  toProduct: prd_01KXYZABCD1234
+                  move: true
+                  images:
+                    - img_01MABCDEF...
+                    - img_01MXYZ...
+      responses:
+        '200':
+          description: Promotion completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  promoted:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+        '400':
+          description: Validation error
+        '404':
+          description: Draft or images not found
+        '409':
+          description: Conflict (e.g., images already attached to another product)
+
+  /internal/images/process:
+    post:
+      summary: Trigger (or retry) variant generation for an image
+      operationId: processImage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageId:
+                  type: string
+                preset:
+                  type: string
+                  description: Name of the preset (variant set), if used
+      responses:
+        '202':
+          description: Accepted for processing
+
+  /internal/webhook/s3:
+    post:
+      summary: MinIO/S3 event webhook (ObjectCreated/Delete) for auto-confirm/triggers
+      operationId: s3Webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '204':
+          description: Accepted
+
+components:
+  schemas:
+    OwnerType:
+      type: string
+      enum: [productDraft, product, user]
+    ImageRole:
+      type: string
+      enum: [main, gallery, other]
+    ImageStatus:
+      type: string
+      enum: [pending, uploaded, processing, ready, failed, deleted]
+    Variant:
+      type: object
+      properties:
+        name:
+          type: string
+          example: thumb
+        key:
+          type: string
+          description: S3 key of the variant
+        width:
+          type: integer
+        height:
+          type: integer
+        mime:
+          type: string
+        size:
+          type: integer
+    Image:
+      type: object
+      required: [id, ownerType, ownerId, role, key, alt, mime, size, status, createdAt, modifiedAt]
+      properties:
+        id:
+          type: string
+          example: img_01MABCDEF...
+        ownerType:
+          $ref: '#/components/schemas/OwnerType'
+        ownerId:
+          type: string
+        role:
+          $ref: '#/components/schemas/ImageRole'
+        key:
+          type: string
+          description: S3 key of the original image
+        url:
+          type: string
+          nullable: true
+          description: Optional — direct URL if public or via proxy
+        alt:
+          type: string
+        mime:
+          type: string
+        size:
+          type: integer
+        hash:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ImageStatus'
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+    ImagePatch:
+      type: object
+      properties:
+        alt:
+          type: string
+        role:
+          $ref: '#/components/schemas/ImageRole'
+        order:
+          type: integer
+          description: Position in the product gallery
+    PresignRequest:
+      type: object
+      required: [ownerType, ownerId, filename, contentType, size, role]
+      properties:
+        ownerType:
+          $ref: '#/components/schemas/OwnerType'
+        ownerId:
+          type: string
+          minLength: 1
+          description: Draft ID or owner ID
+        filename:
+          type: string
+          minLength: 1
+          example: shoe.jpg
+        contentType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp, image/avif]
+          example: image/jpeg
+        size:
+          type: integer
+          minimum: 1
+          maximum: 10485760 # 10 MiB default limit; adjust as needed
+          description: Size in bytes
+        role:
+          $ref: '#/components/schemas/ImageRole'
+    PresignResponse:
+      type: object
+      required: [uploadUrl, key, expiresIn, requiredHeaders]
+      properties:
+        uploadUrl:
+          type: string
+          format: uri
+        key:
+          type: string
+          description: Final S3 key to PUT to
+        expiresIn:
+          type: integer
+          description: TTL in seconds
+        requiredHeaders:
+          type: object
+          additionalProperties:
+            type: string
+    ConfirmRequest:
+      type: object
+      required: [ownerType, ownerId, key, alt, mime, role]
+      properties:
+        ownerType:
+          $ref: '#/components/schemas/OwnerType'
+        ownerId:
+          type: string
+          minLength: 1
+        key:
+          type: string
+          minLength: 1
+          description: S3 key that was used for PUT
+        alt:
+          type: string
+        mime:
+          type: string
+          enum: [image/jpeg, image/png, image/webp, image/avif]
+        role:
+          $ref: '#/components/schemas/ImageRole'
+        checksum:
+          type: string
+          nullable: true
+          description: e.g., SHA256 hex for additional integrity check
+    PromoteRequest:
+      type: object
+      required: [fromDraft, toProduct]
+      properties:
+        fromDraft:
+          type: string
+          minLength: 1
+        toProduct:
+          type: string
+          minLength: 1
+        move:
+          type: boolean
+          default: true
+          description: If true — copy to products/{productId}/... and remove old objects
+        images:
+          type: array
+          description: If omitted — promote all images of the draft
+          items:
+            type: string
+    Problem:
+      type: object
+      description: RFC7807 Problem Details
+      properties:
+        type:
+          type: string
+          example: about:blank
+        title:
+          type: string
+          example: Bad Request
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+        instance:
+          type: string
+        traceId:
+          type: string
