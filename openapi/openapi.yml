@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.8
+  version: 1.0.9
   description: API for managing images
 paths:
   /images/presign:
@@ -514,12 +514,12 @@ components:
           description: e.g., SHA256 hex for additional integrity check
     PromoteRequest:
       type: object
-      required: [fromDraft, toProduct, move]
+      required: [draftId, productId, move]
       properties:
-        fromDraft:
+        draftId:
           type: string
           minLength: 1
-        toProduct:
+        productId:
           type: string
           minLength: 1
         move:
