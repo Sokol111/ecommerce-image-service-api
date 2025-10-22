@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.11
+  version: 1.0.12
   description: API for managing images
 paths:
   /images/presign:
@@ -48,7 +48,7 @@ paths:
         "400":
           description: Validation error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
 
@@ -88,13 +88,21 @@ paths:
         "400":
           description: Validation error
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
         "404":
           description: Object not found in storage (MinIO/S3)
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "409":
           description: Conflict (e.g., already confirmed)
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images:
     get:
@@ -164,6 +172,10 @@ paths:
                 $ref: "#/components/schemas/Image"
         "404":
           description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
     patch:
       summary: Update image metadata (alt, role, order)
@@ -189,6 +201,10 @@ paths:
                 $ref: "#/components/schemas/Image"
         "404":
           description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
     delete:
       summary: Delete image (soft or hard, per policy)
@@ -211,7 +227,7 @@ paths:
         "404":
           description: Not found
           content:
-            application/json:
+            application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
 
@@ -286,6 +302,12 @@ paths:
                     type: string
                     format: date-time
                     nullable: true
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images/promote:
     post:
@@ -331,10 +353,22 @@ paths:
                       $ref: "#/components/schemas/Image"
         "400":
           description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "404":
           description: Draft or images not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "409":
           description: Conflict (e.g., images already attached to another product)
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /internal/images/process:
     post:
@@ -355,21 +389,6 @@ paths:
       responses:
         "202":
           description: Accepted for processing
-
-  /internal/webhook/s3:
-    post:
-      summary: MinIO/S3 event webhook (ObjectCreated/Delete) for auto-confirm/triggers
-      operationId: s3Webhook
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        "204":
-          description: Accepted
 
 components:
   schemas:
@@ -550,19 +569,18 @@ components:
     Problem:
       type: object
       description: RFC7807 Problem Details
+      required: [title, status]
       properties:
-        type:
-          type: string
-          example: about:blank
-        title:
-          type: string
-          example: Bad Request
-        status:
-          type: integer
-          example: 400
-        detail:
-          type: string
-        instance:
-          type: string
-        traceId:
-          type: string
+        type: { type: string, format: uri, default: "about:blank" }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string, format: uri }
+        traceId: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
