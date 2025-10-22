@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.14
+  version: 1.0.15
   description: API for managing images
 paths:
   /images/presign:
@@ -153,7 +153,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "404":
+          description: Image Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500": { $ref: "#/components/responses/ProblemResponse" }
 
     patch:
@@ -178,7 +183,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "404":
+          description: Image Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500": { $ref: "#/components/responses/ProblemResponse" }
 
     delete:
@@ -199,7 +209,12 @@ paths:
       responses:
         "204":
           description: Deleted
-        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "404":
+          description: Image Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/{id}/url:
@@ -273,7 +288,12 @@ paths:
                     type: string
                     format: date-time
                     nullable: true
-        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "404":
+          description: Image Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/promote:
@@ -318,9 +338,24 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Image"
-        "400": { $ref: "#/components/responses/ProblemResponse" }
-        "404": { $ref: "#/components/responses/ProblemResponse" }
-        "409": { $ref: "#/components/responses/ProblemResponse" }
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Image Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "409":
+          description: Conflict during promotion
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /internal/images/process:
