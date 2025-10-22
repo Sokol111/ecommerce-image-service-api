@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.15
+  version: 1.0.16
   description: API for managing images
 paths:
   /images/presign:
@@ -45,8 +45,18 @@ paths:
                     expiresIn: 900
                     requiredHeaders:
                       Content-Type: image/jpeg
-        "400": { $ref: "#/components/responses/ProblemResponse" }
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images/confirm:
     post:
@@ -81,10 +91,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "400": { $ref: "#/components/responses/ProblemResponse" }
-        "404": { $ref: "#/components/responses/ProblemResponse" }
-        "409": { $ref: "#/components/responses/ProblemResponse" }
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Uploaded object not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "409":
+          description: Conflict (e.g., image with the same key already confirmed)
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images:
     get:
@@ -134,7 +164,12 @@ paths:
                     type: integer
                   total:
                     type: integer
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images/{id}:
     get:
@@ -159,7 +194,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
     patch:
       summary: Update image metadata (alt, role, order)
@@ -189,7 +229,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
     delete:
       summary: Delete image (soft or hard, per policy)
@@ -215,7 +260,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images/{id}/url:
     get:
@@ -294,7 +344,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /images/promote:
     post:
@@ -356,7 +411,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   /internal/images/process:
     post:
@@ -377,7 +437,12 @@ paths:
       responses:
         "202":
           description: Accepted for processing
-        "500": { $ref: "#/components/responses/ProblemResponse" }
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
 components:
   schemas:
@@ -573,9 +638,3 @@ components:
             properties:
               field: { type: string }
               message: { type: string }
-  responses:
-    ProblemResponse:
-      description: Problem Details (RFC7807)
-      content:
-        application/problem+json:
-          schema: { $ref: "#/components/schemas/Problem" }
