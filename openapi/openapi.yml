@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.12
+  version: 1.0.13
   description: API for managing images
 paths:
   /images/presign:
@@ -45,12 +45,8 @@ paths:
                     expiresIn: 900
                     requiredHeaders:
                       Content-Type: image/jpeg
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "400": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/confirm:
     post:
@@ -85,24 +81,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "404":
-          description: Object not found in storage (MinIO/S3)
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "409":
-          description: Conflict (e.g., already confirmed)
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "400": { $ref: "#/components/responses/ProblemResponse" }
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "409": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images:
     get:
@@ -152,6 +134,7 @@ paths:
                     type: integer
                   total:
                     type: integer
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/{id}:
     get:
@@ -170,12 +153,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
     patch:
       summary: Update image metadata (alt, role, order)
@@ -199,12 +178,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Image"
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
     delete:
       summary: Delete image (soft or hard, per policy)
@@ -224,12 +199,8 @@ paths:
       responses:
         "204":
           description: Deleted
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/{id}/url:
     get:
@@ -302,12 +273,8 @@ paths:
                     type: string
                     format: date-time
                     nullable: true
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /images/promote:
     post:
@@ -351,24 +318,10 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Image"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "404":
-          description: Draft or images not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "409":
-          description: Conflict (e.g., images already attached to another product)
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+        "400": { $ref: "#/components/responses/ProblemResponse" }
+        "404": { $ref: "#/components/responses/ProblemResponse" }
+        "409": { $ref: "#/components/responses/ProblemResponse" }
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
   /internal/images/process:
     post:
@@ -389,6 +342,7 @@ paths:
       responses:
         "202":
           description: Accepted for processing
+        "500": { $ref: "#/components/responses/ProblemResponse" }
 
 components:
   schemas:
@@ -584,3 +538,9 @@ components:
             properties:
               field: { type: string }
               message: { type: string }
+  responses:
+    ProblemResponse:
+      description: Problem Details (RFC7807)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
