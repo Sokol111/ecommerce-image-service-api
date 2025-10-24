@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.16
+  version: 1.0.17
   description: API for managing images
 paths:
   /images/presign:
@@ -623,9 +623,9 @@ components:
     Problem:
       type: object
       description: RFC7807 Problem Details
-      required: [title, status]
+      required: [type, title, status]
       properties:
-        type: { type: string, format: uri, default: "about:blank" }
+        type: { type: string, format: uri }
         title: { type: string }
         status: { type: integer }
         detail: { type: string }
