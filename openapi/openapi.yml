@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.17
+  version: 1.0.18
   description: API for managing images
 paths:
   /images/presign:
@@ -330,6 +330,7 @@ paths:
             application/json:
               schema:
                 type: object
+                required: [url]
                 properties:
                   url:
                     type: string
