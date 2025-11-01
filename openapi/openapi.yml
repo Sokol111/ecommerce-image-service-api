@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.18
+  version: 1.0.19
   description: API for managing images
 paths:
   /images/presign:
@@ -330,7 +330,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [url]
+                required: [url, expiresAt]
                 properties:
                   url:
                     type: string
@@ -338,7 +338,6 @@ paths:
                   expiresAt:
                     type: string
                     format: date-time
-                    nullable: true
         "404":
           description: Image Not Found
           content:
