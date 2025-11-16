@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.21
+  version: 1.0.22
   description: API for managing images
 paths:
   /images/presign:
@@ -41,7 +41,7 @@ paths:
                 ok:
                   value:
                     uploadUrl: "https://minio...X-Amz-Expires=900&X-Amz-Signature=..."
-                    key: "product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg"
+                    uploadToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWQiOnsia2V5Ijoic..."
                     expiresIn: 900
                     requiredHeaders:
                       Content-Type: image/jpeg
@@ -78,11 +78,8 @@ paths:
             examples:
               ok:
                 value:
-                  ownerType: productDraft
-                  ownerId: dft_01JABCD12EF3G45H6JK7MN8PQ
-                  key: product-drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/01JCDEFABCXYZ.jpg
+                  uploadToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   alt: "Black sneakers"
-                  mime: image/jpeg
                   role: main
       responses:
         "201":
@@ -563,14 +560,14 @@ components:
           $ref: "#/components/schemas/ImageRole"
     PresignResponse:
       type: object
-      required: [uploadUrl, key, expiresIn, requiredHeaders]
+      required: [uploadUrl, uploadToken, expiresIn, requiredHeaders]
       properties:
         uploadUrl:
           type: string
           format: uri
-        key:
+        uploadToken:
           type: string
-          description: Final S3 key to PUT to
+          description: Signed JWT token containing upload metadata (key, ownerType, ownerId, role, etc.)
         expiresIn:
           type: integer
           description: TTL in seconds
@@ -580,22 +577,14 @@ components:
             type: string
     ConfirmRequest:
       type: object
-      required: [ownerType, ownerId, key, alt, mime, role]
+      required: [uploadToken, alt, role]
       properties:
-        ownerType:
-          $ref: "#/components/schemas/OwnerType"
-        ownerId:
+        uploadToken:
           type: string
           minLength: 1
-        key:
-          type: string
-          minLength: 1
-          description: S3 key that was used for PUT
+          description: Signed JWT token from presign response
         alt:
           type: string
-        mime:
-          type: string
-          enum: [image/jpeg, image/png, image/webp, image/avif]
         role:
           $ref: "#/components/schemas/ImageRole"
         checksum:
