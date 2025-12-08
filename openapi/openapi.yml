@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.24
+  version: 1.0.25
   description: API for managing images
 paths:
-  /images/presign:
+  /v1/images/presign:
     post:
       summary: Create a presigned PUT URL for uploading an image to MinIO/S3
       operationId: createPresign
@@ -58,7 +58,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /images/confirm:
+  /v1/images/confirm:
     post:
       summary: Confirm upload (HEAD against S3), persist metadata
       operationId: confirmUpload
@@ -113,7 +113,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /images:
+  /v1/images:
     get:
       summary: List/search images by owner/filters
       operationId: listImages
@@ -168,7 +168,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /images/{id}:
+  /v1/images/{id}:
     get:
       summary: Get image metadata
       operationId: getImage
@@ -264,7 +264,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /images/{id}/url:
+  /v1/images/{id}/url:
     get:
       summary: Generate a signed imgproxy URL for delivery with requested params
       operationId: getDeliveryUrl
@@ -348,7 +348,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /images/promote:
+  /v1/images/promote:
     post:
       summary: Promote images from a product draft to a final product
       operationId: promoteImages
@@ -415,7 +415,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /internal/images/process:
+  /v1/internal/images/process:
     post:
       summary: Trigger (or retry) variant generation for an image
       operationId: processImage
