@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.25
+  version: 1.0.26
   description: API for managing images
 paths:
   /v1/images/presign:
@@ -348,6 +348,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
+  /v1/images/urls:
+    post:
+      summary: Generate signed imgproxy URLs for multiple images in a single request
+      operationId: getDeliveryUrls
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchUrlRequest"
+            examples:
+              basic:
+                value:
+                  imageIds:
+                    - "550e8400-e29b-41d4-a716-446655440000"
+                    - "550e8400-e29b-41d4-a716-446655440001"
+                  w: 400
+                  quality: 80
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BatchUrlResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+
   /v1/images/promote:
     post:
       summary: Promote images from a product draft to a final product
@@ -607,6 +645,60 @@ components:
         images:
           type: array
           description: If omitted — promote all images of the draft
+          items:
+            type: string
+    BatchUrlRequest:
+      type: object
+      required: [imageIds]
+      properties:
+        imageIds:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+          description: List of image IDs to get URLs for (max 50)
+        w:
+          type: integer
+          minimum: 1
+          description: Width in pixels
+        h:
+          type: integer
+          minimum: 1
+          description: Height in pixels
+        fit:
+          type: string
+          enum: [cover, contain, fill, inside, outside]
+        format:
+          type: string
+          enum: [original, webp, avif, jpeg, png]
+          default: original
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 85
+    BatchUrlResponse:
+      type: object
+      required: [urls]
+      properties:
+        urls:
+          type: array
+          items:
+            type: object
+            required: [imageId, url]
+            properties:
+              imageId:
+                type: string
+              url:
+                type: string
+                format: uri
+              expiresAt:
+                type: string
+                format: date-time
+        notFound:
+          type: array
+          description: Image IDs that were not found
           items:
             type: string
     Problem:
