@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.0.26
+  version: 1.0.27
   description: API for managing images
 paths:
   /v1/images/presign:
@@ -685,22 +685,24 @@ components:
         urls:
           type: array
           items:
-            type: object
-            required: [imageId, url]
-            properties:
-              imageId:
-                type: string
-              url:
-                type: string
-                format: uri
-              expiresAt:
-                type: string
-                format: date-time
+            $ref: "#/components/schemas/ImageUrl"
         notFound:
           type: array
           description: Image IDs that were not found
           items:
             type: string
+    ImageUrl:
+      type: object
+      required: [imageId, url]
+      properties:
+        imageId:
+          type: string
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
     Problem:
       type: object
       description: RFC7807 Problem Details
