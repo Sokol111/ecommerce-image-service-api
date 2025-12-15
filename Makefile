@@ -23,17 +23,18 @@ COLOR_RED := \033[31m
 # ---- Include makefiles ----
 -include $(MAKEFILES_DIR)/openapi-go.mk
 -include $(MAKEFILES_DIR)/openapi-ts.mk
+-include $(MAKEFILES_DIR)/asyncapi-go.mk
 
 # =============================================================================
 # Generate
 # =============================================================================
 
 .PHONY: generate
-generate: openapi-generate openapi-ts-generate ## Generate all code (OpenAPI Go + TS)
+generate: openapi-generate openapi-ts-generate events-generate ## Generate all code (OpenAPI Go + TS + AsyncAPI/Events)
 	@printf "$(COLOR_GREEN)✓ All generation complete!$(COLOR_RESET)\n"
 
 .PHONY: clean
-clean: openapi-clean openapi-ts-clean ## Clean all generated files
+clean: openapi-clean openapi-ts-clean events-clean ## Clean all generated files
 	@printf "$(COLOR_GREEN)✓ All cleaned!$(COLOR_RESET)\n"
 
 # =============================================================================

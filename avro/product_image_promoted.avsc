@@ -1,0 +1,39 @@
+{
+  "type": "record",
+  "name": "ProductImagePromotedEvent",
+  "namespace": "com.ecommerce.events.image",
+  "doc": "Event emitted when an image is promoted from a product draft to a final product. Published to catalog.product.events topic with product_id as partition key.",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": "com.ecommerce.events.EventMetadata",
+      "doc": "Event metadata containing technical and observability fields"
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "ProductImagePromotedPayload",
+        "doc": "Business data for product image promotion event",
+        "fields": [
+          {
+            "name": "image_id",
+            "type": "string",
+            "doc": "Unique image identifier (UUID)"
+          },
+          {
+            "name": "product_id",
+            "type": "string",
+            "doc": "Target product identifier (UUID) - used as Kafka partition key"
+          },
+          {
+            "name": "image_url",
+            "type": "string",
+            "doc": "Public URL for image delivery (via imgproxy or CDN)"
+          }
+        ]
+      },
+      "doc": "Image promotion business data"
+    }
+  ]
+}
