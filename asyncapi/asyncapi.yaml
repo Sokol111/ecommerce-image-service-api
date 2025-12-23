@@ -57,11 +57,12 @@ components:
       summary: Event published when an image is promoted from draft to product
       contentType: application/avro
       description: |
-        **Schema Definition**: See /avro/image_promoted.avsc
+        **Schema Definition**: See /avro/product_image_promoted_payload.avsc
         
         This event is emitted when an image is promoted from a product draft to a final product.
         It is published to the `catalog.product.events` topic with `product_id` as partition key
         to ensure ordering with product events.
+        Generated event type: ProductImagePromotedEvent (metadata + payload envelope)
         
         **Structure**:
         - `metadata` (EventMetadata): event_id, event_type, source, timestamp, trace_id, etc.
@@ -69,4 +70,4 @@ components:
       payload:
         schemaFormat: application/vnd.apache.avro+json;version=1.9.0
         schema:
-          $ref: '../avro/product_image_promoted.avsc'
+          $ref: '../avro/product_image_promoted_payload.avsc'
