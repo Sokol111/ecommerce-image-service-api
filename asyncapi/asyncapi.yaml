@@ -5,7 +5,7 @@
 asyncapi: 3.0.0
 info:
   title: Image Messaging API
-  version: 1.0.28
+  version: 1.0.29
   description: |
     AsyncAPI specification for Image service Kafka events.
     Events are serialized using Avro format and registered in Schema Registry.
