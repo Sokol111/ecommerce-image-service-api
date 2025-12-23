@@ -1,0 +1,73 @@
+# ============================================================================
+# Image Messaging API - AsyncAPI Specification
+# ============================================================================
+
+asyncapi: 3.0.0
+info:
+  title: Image Messaging API
+  version: 1.0.29
+  description: |
+    AsyncAPI specification for Image service Kafka events.
+    Events are serialized using Avro format and registered in Schema Registry.
+
+    🏗️ **Event Structure**:
+    All events follow the metadata + payload pattern:
+    ```
+    {
+      metadata: EventMetadata,  // Technical fields (event_id, trace_id, etc.)
+      payload: BusinessData      // Domain-specific data
+    }
+    ```
+
+    📦 **Topic Strategy**:
+    Image events related to products are published to `catalog.product.events` topic
+    using `product_id` as partition key to guarantee ordering with other product events.
+  contact:
+    name: Sokol111
+    url: https://github.com/Sokol111
+
+servers:
+  development:
+    host: localhost:9092
+    protocol: kafka
+    description: Local Kafka broker
+  production:
+    host: kafka:9092
+    protocol: kafka
+    description: Production Kafka broker
+
+defaultContentType: application/avro
+
+channels:
+  catalog.product.events:
+    address: catalog.product.events
+    description: |
+      Shared product domain events channel.
+      Image service publishes image-related events to this topic to maintain
+      event ordering with product events (using product_id as partition key).
+    messages:
+      ProductImagePromoted:
+        $ref: "#/components/messages/ProductImagePromoted"
+
+components:
+  messages:
+    ProductImagePromoted:
+      name: ProductImagePromoted
+      title: Product Image Promoted Event
+      summary: Event published when an image is promoted from draft to product
+      contentType: application/avro
+      description: |
+        **Schema Definition**: See /avro/product_image_promoted_payload.avsc
+        
+        This event is emitted when an image is promoted from a product draft to a final product.
+        It is published to the `catalog.product.events` topic with `product_id` as partition key
+        to ensure ordering with product events.
+        Generated event type: ProductImagePromotedEvent (metadata + payload envelope)
+        
+        **Structure**:
+        - `metadata` (EventMetadata): event_id, event_type, source, timestamp, trace_id, etc.
+        - `payload` (ProductImagePromotedPayload): image_id, product_id, image_url, s3_key, role, etc.
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema:
+          $ref: '../avro/product_image_promoted_payload.avsc'
