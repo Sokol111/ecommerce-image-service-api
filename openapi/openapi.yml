@@ -24,7 +24,7 @@ paths:
             examples:
               draftExample:
                 value:
-                  ownerType: productDraft
+                  ownerType: draft
                   ownerId: dft_01JABCD12EF3G45H6JK7MN8PQ
                   filename: shoe.jpg
                   contentType: image/jpeg
@@ -483,7 +483,7 @@ components:
   schemas:
     OwnerType:
       type: string
-      enum: [productDraft, product, user]
+      enum: [draft, product, user]
     ImageRole:
       type: string
       enum: [main, gallery, other]
