@@ -6,15 +6,8 @@ info:
 paths:
   /v1/images/presign:
     post:
-      summary: Create a presigned PUT URL for uploading an image to MinIO/S3
+      summary: Create a POST policy for uploading an image to MinIO/S3 with size validation
       operationId: createPresign
-      # parameters:
-      #   - in: header
-      #     name: Idempotency-Key
-      #     schema:
-      #       type: string
-      #     required: false
-      #     description: Idempotency key for safe retries.
       requestBody:
         required: true
         content:
@@ -32,7 +25,7 @@ paths:
                   role: main
       responses:
         "200":
-          description: Presigned URL created
+          description: POST policy created
           content:
             application/json:
               schema:
@@ -40,11 +33,17 @@ paths:
               examples:
                 ok:
                   value:
-                    uploadUrl: "https://minio...X-Amz-Expires=900&X-Amz-Signature=..."
-                    uploadToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWQiOnsia2V5Ijoic..."
+                    uploadUrl: "http://localhost:9000/products"
+                    uploadToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                     expiresIn: 900
-                    requiredHeaders:
-                      Content-Type: image/jpeg
+                    formData:
+                      key: "drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/abc123.jpg"
+                      Content-Type: "image/jpeg"
+                      policy: "eyJleHBpcmF0aW9uIjoiMjAyNi0wMS..."
+                      x-amz-algorithm: "AWS4-HMAC-SHA256"
+                      x-amz-credential: "minioadmin/20260124/us-east-1/s3/aws4_request"
+                      x-amz-date: "20260124T120000Z"
+                      x-amz-signature: "a1b2c3d4e5f6..."
         "400":
           description: Bad Request
           content:
@@ -598,21 +597,25 @@ components:
           $ref: "#/components/schemas/ImageRole"
     PresignResponse:
       type: object
-      required: [uploadUrl, uploadToken, expiresIn, requiredHeaders]
+      required: [uploadUrl, uploadToken, expiresIn, formData]
       properties:
         uploadUrl:
           type: string
           format: uri
+          description: URL to POST the file to (multipart/form-data)
         uploadToken:
           type: string
-          description: Signed JWT token containing upload metadata (key, ownerType, ownerId, role, etc.)
+          description: Signed JWT token for confirm endpoint (contains key, ownerType, ownerId, role, etc.)
         expiresIn:
           type: integer
           description: TTL in seconds
-        requiredHeaders:
+        formData:
           type: object
           additionalProperties:
             type: string
+          description: |
+            Form fields to include with POST upload. Must be sent BEFORE the file field.
+            Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature
     ConfirmRequest:
       type: object
       required: [uploadToken, alt, role]
