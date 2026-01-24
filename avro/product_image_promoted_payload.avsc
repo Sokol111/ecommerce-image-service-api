@@ -15,9 +15,14 @@
       "doc": "Target product identifier (UUID) - used as Kafka partition key"
     },
     {
-      "name": "image_url",
+      "name": "small_image_url",
       "type": "string",
-      "doc": "Public URL for image delivery (via imgproxy or CDN)"
+      "doc": "Small image URL (400px) for thumbnails and listings"
+    },
+    {
+      "name": "large_image_url",
+      "type": "string",
+      "doc": "Large image URL (800px) for product detail pages"
     }
   ]
 }
