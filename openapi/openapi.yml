@@ -334,7 +334,7 @@ components:
       enum: [main, gallery, other]
     ImageStatus:
       type: string
-      enum: [pending, uploaded, processing, ready, failed, deleted]
+      enum: [uploaded, ready, deleted]
     Variant:
       type: object
       properties:
