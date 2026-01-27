@@ -112,61 +112,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /v1/images:
-    get:
-      summary: List/search images by owner/filters
-      operationId: listImages
-      parameters:
-        - in: query
-          name: ownerType
-          schema:
-            $ref: "#/components/schemas/OwnerType"
-        - in: query
-          name: ownerId
-          schema:
-            type: string
-        - in: query
-          name: status
-          schema:
-            $ref: "#/components/schemas/ImageStatus"
-        - in: query
-          name: page
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - in: query
-          name: pageSize
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 200
-            default: 50
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Image"
-                  page:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  total:
-                    type: integer
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
   /v1/images/{id}:
     get:
       summary: Get image metadata
@@ -180,41 +125,6 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Image"
-        "404":
-          description: Image Not Found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-    patch:
-      summary: Update image metadata (alt, role, order)
-      operationId: updateImage
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ImagePatch"
-      responses:
-        "200":
-          description: Updated
           content:
             application/json:
               schema:
@@ -347,44 +257,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /v1/images/urls:
-    post:
-      summary: Generate signed imgproxy URLs for multiple images in a single request
-      operationId: getDeliveryUrls
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BatchUrlRequest"
-            examples:
-              basic:
-                value:
-                  imageIds:
-                    - "550e8400-e29b-41d4-a716-446655440000"
-                    - "550e8400-e29b-41d4-a716-446655440001"
-                  w: 400
-                  quality: 80
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BatchUrlResponse"
-        "400":
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
   /v1/images/promote:
     post:
       summary: Promote images from a product draft to a final product
@@ -445,32 +317,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/internal/images/process:
-    post:
-      summary: Trigger (or retry) variant generation for an image
-      operationId: processImage
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                imageId:
-                  type: string
-                preset:
-                  type: string
-                  description: Name of the preset (variant set), if used
-      responses:
-        "202":
-          description: Accepted for processing
         "500":
           description: Internal Server Error
           content:
@@ -560,16 +406,6 @@ components:
         modifiedAt:
           type: string
           format: date-time
-    ImagePatch:
-      type: object
-      properties:
-        alt:
-          type: string
-        role:
-          $ref: "#/components/schemas/ImageRole"
-        order:
-          type: integer
-          description: Position in the product gallery
     PresignRequest:
       type: object
       required: [ownerType, ownerId, filename, contentType, size, role]
@@ -650,62 +486,6 @@ components:
           description: If omitted — promote all images of the draft
           items:
             type: string
-    BatchUrlRequest:
-      type: object
-      required: [imageIds]
-      properties:
-        imageIds:
-          type: array
-          minItems: 1
-          maxItems: 50
-          items:
-            type: string
-          description: List of image IDs to get URLs for (max 50)
-        w:
-          type: integer
-          minimum: 1
-          description: Width in pixels
-        h:
-          type: integer
-          minimum: 1
-          description: Height in pixels
-        fit:
-          type: string
-          enum: [cover, contain, fill, inside, outside]
-        format:
-          type: string
-          enum: [original, webp, avif, jpeg, png]
-          default: original
-        quality:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 85
-    BatchUrlResponse:
-      type: object
-      required: [urls]
-      properties:
-        urls:
-          type: array
-          items:
-            $ref: "#/components/schemas/ImageUrl"
-        notFound:
-          type: array
-          description: Image IDs that were not found
-          items:
-            type: string
-    ImageUrl:
-      type: object
-      required: [imageId, url]
-      properties:
-        imageId:
-          type: string
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
     Problem:
       type: object
       description: RFC7807 Problem Details
