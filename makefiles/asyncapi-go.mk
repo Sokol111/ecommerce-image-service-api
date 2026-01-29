@@ -1,5 +1,4 @@
 # Configuration (can be overridden)
-ASYNCAPI_SPEC ?= asyncapi/asyncapi.yaml
 AVRO_DIR ?= avro
 EVENTS_DIR ?= gen/events
 EVENTS_PACKAGE ?= events
@@ -9,12 +8,11 @@ EVENTS_PACKAGE ?= events
 # =============================================================================
 
 .PHONY: events-generate
-events-generate: _events-check-tools ## Generate Go code from AsyncAPI/Avro schemas
+events-generate: _events-check-tools ## Generate Go code from Avro schemas
 	@eventgen generate \
 		--payloads $(AVRO_DIR) \
 		--output $(EVENTS_DIR) \
-		--package $(EVENTS_PACKAGE) \
-		--asyncapi $(ASYNCAPI_SPEC)
+		--package $(EVENTS_PACKAGE)
 
 .PHONY: events-validate
 events-validate: _events-check-tools ## Validate Avro schemas
@@ -39,12 +37,9 @@ events-install-tools: ## Install required tools for events generation
 		echo "  -> from github"; \
 		go install github.com/Sokol111/ecommerce-commons/cmd/eventgen@latest; \
 	fi
-	@echo "Installing avrogen..."
-	@go install github.com/hamba/avro/v2/cmd/avrogen@latest
 	@echo "Done."
 
 # Internal targets
 .PHONY: _events-check-tools
 _events-check-tools:
 	@command -v eventgen >/dev/null 2>&1 || { echo "Error: eventgen not found. Run: make events-install-tools"; exit 1; }
-	@command -v avrogen >/dev/null 2>&1 || { echo "Error: avrogen not found. Run: make events-install-tools"; exit 1; }
