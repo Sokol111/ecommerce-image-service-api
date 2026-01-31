@@ -1,0 +1,89 @@
+{
+  "doc": "Event envelope for ProductImagePromoted",
+  "fields": [
+    {
+      "doc": "Event metadata containing technical and observability fields",
+      "name": "metadata",
+      "type": {
+        "doc": "Common event metadata used by all domain events. Contains technical/observability fields separate from business payload.",
+        "fields": [
+          {
+            "name": "event_id",
+            "type": "string",
+            "doc": "Unique event identifier (UUID)"
+          },
+          {
+            "name": "event_type",
+            "type": "string",
+            "doc": "Type of the event (e.g., ProductCreated, ProductUpdated)"
+          },
+          {
+            "name": "source",
+            "type": "string",
+            "doc": "Source service that produced the event"
+          },
+          {
+            "name": "timestamp",
+            "type": {
+              "logicalType": "timestamp-millis",
+              "type": "long"
+            },
+            "doc": "Event creation timestamp in milliseconds since epoch"
+          },
+          {
+            "name": "trace_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "OpenTelemetry trace ID for distributed tracing"
+          },
+          {
+            "name": "correlation_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "Correlation ID for request tracking across services"
+          }
+        ],
+        "name": "EventMetadata",
+        "type": "record"
+      }
+    },
+    {
+      "doc": "Business data for product image promoted event",
+      "name": "payload",
+      "type": {
+        "doc": "Business data for product image promotion event",
+        "fields": [
+          {
+            "name": "image_id",
+            "type": "string",
+            "doc": "Unique image identifier (UUID)"
+          },
+          {
+            "name": "product_id",
+            "type": "string",
+            "doc": "Target product identifier (UUID) - used as Kafka partition key"
+          },
+          {
+            "name": "small_image_url",
+            "type": "string",
+            "doc": "Small image URL (400px) for thumbnails and listings"
+          },
+          {
+            "name": "large_image_url",
+            "type": "string",
+            "doc": "Large image URL (800px) for product detail pages"
+          }
+        ],
+        "name": "ProductImagePromotedPayload",
+        "type": "record"
+      }
+    }
+  ],
+  "name": "ProductImagePromotedEvent",
+  "namespace": "com.ecommerce.events.image",
+  "type": "record"
+}
