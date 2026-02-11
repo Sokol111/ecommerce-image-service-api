@@ -52,7 +52,7 @@
       }
     },
     {
-      "doc": "Business data for product image promoted event",
+      "doc": "Business data for ProductImagePromoted event",
       "name": "payload",
       "type": {
         "doc": "Business data for product image promotion event",
