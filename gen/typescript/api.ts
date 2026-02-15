@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.0.32
+ * OpenAPI spec version: 1.0.33
  */
 import axios from 'axios';
 import type {
