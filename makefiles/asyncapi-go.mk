@@ -8,7 +8,7 @@ EVENTS_PACKAGE ?= events
 # =============================================================================
 
 .PHONY: events-generate
-events-generate: _events-check-tools ## Generate Go code from Avro schemas
+events-generate: _events-check-tools _events-clean-dir ## Generate Go code from Avro schemas
 	@eventgen generate \
 		--payloads $(AVRO_DIR) \
 		--output $(EVENTS_DIR) \
@@ -40,6 +40,12 @@ events-install-tools: ## Install required tools for events generation
 	@echo "Done."
 
 # Internal targets
+.PHONY: _events-clean-dir
+_events-clean-dir:
+	@printf "$(COLOR_BLUE)→ Cleaning generated events files...$(COLOR_RESET)\n"
+	@rm -rf $(EVENTS_DIR)
+	@mkdir -p $(EVENTS_DIR)
+
 .PHONY: _events-check-tools
 _events-check-tools:
 	@command -v eventgen >/dev/null 2>&1 || { echo "Error: eventgen not found. Run: make events-install-tools"; exit 1; }
