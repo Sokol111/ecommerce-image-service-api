@@ -2312,8 +2312,10 @@ func (s *PromoteRequest) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *PromoteRequest) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("draftId")
-		e.Str(s.DraftId)
+		if s.DraftId.Set {
+			e.FieldStart("draftId")
+			s.DraftId.Encode(e)
+		}
 	}
 	{
 		e.FieldStart("productId")
@@ -2352,11 +2354,9 @@ func (s *PromoteRequest) Decode(d *jx.Decoder) error {
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
 		case "draftId":
-			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.DraftId = string(v)
-				if err != nil {
+				s.DraftId.Reset()
+				if err := s.DraftId.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -2416,7 +2416,7 @@ func (s *PromoteRequest) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000111,
+		0b00000110,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

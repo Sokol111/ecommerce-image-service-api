@@ -1340,8 +1340,9 @@ func (*PromoteImagesOK) promoteImagesRes() {}
 
 // Ref: #/components/schemas/PromoteRequest
 type PromoteRequest struct {
-	DraftId   string `json:"draftId"`
-	ProductId string `json:"productId"`
+	// Required only when images list is omitted (promote all draft images).
+	DraftId   OptString `json:"draftId"`
+	ProductId string    `json:"productId"`
 	// If true — copy to products/{productId}/... and remove old objects.
 	Move bool `json:"move"`
 	// If omitted — promote all images of the draft.
@@ -1349,7 +1350,7 @@ type PromoteRequest struct {
 }
 
 // GetDraftId returns the value of DraftId.
-func (s *PromoteRequest) GetDraftId() string {
+func (s *PromoteRequest) GetDraftId() OptString {
 	return s.DraftId
 }
 
@@ -1369,7 +1370,7 @@ func (s *PromoteRequest) GetImages() []string {
 }
 
 // SetDraftId sets the value of DraftId.
-func (s *PromoteRequest) SetDraftId(val string) {
+func (s *PromoteRequest) SetDraftId(val OptString) {
 	s.DraftId = val
 }
 

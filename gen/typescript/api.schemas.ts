@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.0.34
+ * OpenAPI spec version: 1.0.35
  */
 export type OwnerType = typeof OwnerType[keyof typeof OwnerType];
 
@@ -134,8 +134,11 @@ export interface ConfirmRequest {
 }
 
 export interface PromoteRequest {
-  /** @minLength 1 */
-  draftId: string;
+  /**
+   * Required only when images list is omitted (promote all draft images)
+   * @minLength 1
+   */
+  draftId?: string;
   /** @minLength 1 */
   productId: string;
   /** If true — copy to products/{productId}/... and remove old objects */
