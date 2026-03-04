@@ -3,14 +3,8 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.0.35
+ * OpenAPI spec version: 1.0.36
  */
-import axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-
 import type {
   ConfirmRequest,
   DeleteImageParams,
@@ -19,93 +13,374 @@ import type {
   Image,
   PresignRequest,
   PresignResponse,
+  Problem,
   PromoteImages200,
   PromoteRequest
 } from './api.schemas';
 
 
-
-
-  export const getImageServiceAPI = () => {
 /**
  * @summary Create a POST policy for uploading an image to MinIO/S3 with size validation
  */
-const createPresign = <TData = AxiosResponse<PresignResponse>>(
-    presignRequest: PresignRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/images/presign`,
-      presignRequest,options
-    );
+export type createPresignResponse200 = {
+  data: PresignResponse
+  status: 200
+}
+
+export type createPresignResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type createPresignResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type createPresignResponseSuccess = (createPresignResponse200) & {
+  headers: Headers;
+};
+export type createPresignResponseError = (createPresignResponse400 | createPresignResponse500) & {
+  headers: Headers;
+};
+
+export type createPresignResponse = (createPresignResponseSuccess | createPresignResponseError)
+
+export const getCreatePresignUrl = () => {
+
+
+  
+
+  return `/v1/images/presign`
+}
+
+export const createPresign = async (presignRequest: PresignRequest, options?: RequestInit): Promise<createPresignResponse> => {
+  
+  const res = await fetch(getCreatePresignUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      presignRequest,)
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createPresignResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createPresignResponse
+}
+
+
 
 /**
  * @summary Confirm upload (HEAD against S3), persist metadata
  */
-const confirmUpload = <TData = AxiosResponse<Image>>(
-    confirmRequest: ConfirmRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/images/confirm`,
-      confirmRequest,options
-    );
+export type confirmUploadResponse201 = {
+  data: Image
+  status: 201
+}
+
+export type confirmUploadResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type confirmUploadResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type confirmUploadResponse409 = {
+  data: Problem
+  status: 409
+}
+
+export type confirmUploadResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type confirmUploadResponseSuccess = (confirmUploadResponse201) & {
+  headers: Headers;
+};
+export type confirmUploadResponseError = (confirmUploadResponse400 | confirmUploadResponse404 | confirmUploadResponse409 | confirmUploadResponse500) & {
+  headers: Headers;
+};
+
+export type confirmUploadResponse = (confirmUploadResponseSuccess | confirmUploadResponseError)
+
+export const getConfirmUploadUrl = () => {
+
+
+  
+
+  return `/v1/images/confirm`
+}
+
+export const confirmUpload = async (confirmRequest: ConfirmRequest, options?: RequestInit): Promise<confirmUploadResponse> => {
+  
+  const res = await fetch(getConfirmUploadUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      confirmRequest,)
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: confirmUploadResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as confirmUploadResponse
+}
+
+
 
 /**
  * @summary Get image metadata
  */
-const getImage = <TData = AxiosResponse<Image>>(
-    id: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/images/${id}`,options
-    );
+export type getImageResponse200 = {
+  data: Image
+  status: 200
+}
+
+export type getImageResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type getImageResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type getImageResponseSuccess = (getImageResponse200) & {
+  headers: Headers;
+};
+export type getImageResponseError = (getImageResponse404 | getImageResponse500) & {
+  headers: Headers;
+};
+
+export type getImageResponse = (getImageResponseSuccess | getImageResponseError)
+
+export const getGetImageUrl = (id: string,) => {
+
+
+  
+
+  return `/v1/images/${id}`
+}
+
+export const getImage = async (id: string, options?: RequestInit): Promise<getImageResponse> => {
+  
+  const res = await fetch(getGetImageUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getImageResponse
+}
+
+
 
 /**
  * @summary Delete image (soft or hard, per policy)
  */
-const deleteImage = <TData = AxiosResponse<void>>(
-    id: string,
-    params?: DeleteImageParams, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.delete(
-      `/v1/images/${id}`,{
+export type deleteImageResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteImageResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type deleteImageResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type deleteImageResponseSuccess = (deleteImageResponse204) & {
+  headers: Headers;
+};
+export type deleteImageResponseError = (deleteImageResponse404 | deleteImageResponse500) & {
+  headers: Headers;
+};
+
+export type deleteImageResponse = (deleteImageResponseSuccess | deleteImageResponseError)
+
+export const getDeleteImageUrl = (id: string,
+    params?: DeleteImageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/images/${id}?${stringifiedParams}` : `/v1/images/${id}`
+}
+
+export const deleteImage = async (id: string,
+    params?: DeleteImageParams, options?: RequestInit): Promise<deleteImageResponse> => {
+  
+  const res = await fetch(getDeleteImageUrl(id,params),
+  {      
     ...options,
-        params: {...params, ...options?.params},}
-    );
+    method: 'DELETE'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteImageResponse
+}
+
+
 
 /**
  * @summary Generate a signed imgproxy URL for delivery with requested params
  */
-const getDeliveryUrl = <TData = AxiosResponse<GetDeliveryUrl200>>(
-    id: string,
-    params?: GetDeliveryUrlParams, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/images/${id}/url`,{
+export type getDeliveryUrlResponse200 = {
+  data: GetDeliveryUrl200
+  status: 200
+}
+
+export type getDeliveryUrlResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type getDeliveryUrlResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type getDeliveryUrlResponseSuccess = (getDeliveryUrlResponse200) & {
+  headers: Headers;
+};
+export type getDeliveryUrlResponseError = (getDeliveryUrlResponse404 | getDeliveryUrlResponse500) & {
+  headers: Headers;
+};
+
+export type getDeliveryUrlResponse = (getDeliveryUrlResponseSuccess | getDeliveryUrlResponseError)
+
+export const getGetDeliveryUrlUrl = (id: string,
+    params?: GetDeliveryUrlParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/images/${id}/url?${stringifiedParams}` : `/v1/images/${id}/url`
+}
+
+export const getDeliveryUrl = async (id: string,
+    params?: GetDeliveryUrlParams, options?: RequestInit): Promise<getDeliveryUrlResponse> => {
+  
+  const res = await fetch(getGetDeliveryUrlUrl(id,params),
+  {      
     ...options,
-        params: {...params, ...options?.params},}
-    );
+    method: 'GET'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getDeliveryUrlResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getDeliveryUrlResponse
+}
+
+
 
 /**
  * @summary Promote images from a product draft to a final product
  */
-const promoteImages = <TData = AxiosResponse<PromoteImages200>>(
-    promoteRequest: PromoteRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/images/promote`,
-      promoteRequest,options
-    );
-  }
+export type promoteImagesResponse200 = {
+  data: PromoteImages200
+  status: 200
+}
 
-return {createPresign,confirmUpload,getImage,deleteImage,getDeliveryUrl,promoteImages}};
-export type CreatePresignResult = AxiosResponse<PresignResponse>
-export type ConfirmUploadResult = AxiosResponse<Image>
-export type GetImageResult = AxiosResponse<Image>
-export type DeleteImageResult = AxiosResponse<void>
-export type GetDeliveryUrlResult = AxiosResponse<GetDeliveryUrl200>
-export type PromoteImagesResult = AxiosResponse<PromoteImages200>
+export type promoteImagesResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type promoteImagesResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type promoteImagesResponse409 = {
+  data: Problem
+  status: 409
+}
+
+export type promoteImagesResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type promoteImagesResponseSuccess = (promoteImagesResponse200) & {
+  headers: Headers;
+};
+export type promoteImagesResponseError = (promoteImagesResponse400 | promoteImagesResponse404 | promoteImagesResponse409 | promoteImagesResponse500) & {
+  headers: Headers;
+};
+
+export type promoteImagesResponse = (promoteImagesResponseSuccess | promoteImagesResponseError)
+
+export const getPromoteImagesUrl = () => {
+
+
+  
+
+  return `/v1/images/promote`
+}
+
+export const promoteImages = async (promoteRequest: PromoteRequest, options?: RequestInit): Promise<promoteImagesResponse> => {
+  
+  const res = await fetch(getPromoteImagesUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      promoteRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: promoteImagesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as promoteImagesResponse
+}
+
+
+

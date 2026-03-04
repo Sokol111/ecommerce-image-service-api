@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.0.35
+ * OpenAPI spec version: 1.0.36
  */
 export type OwnerType = typeof OwnerType[keyof typeof OwnerType];
 
