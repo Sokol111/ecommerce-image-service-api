@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.1.0
+ * OpenAPI spec version: 1.1.1
  */
 import type {
   ConfirmRequest,
