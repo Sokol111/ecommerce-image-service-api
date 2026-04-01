@@ -1,12 +1,12 @@
 openapi: 3.0.3
 info:
   title: Image Service API
-  version: 1.1.4
+  version: 1.1.5
   description: API for managing images
 paths:
   /v1/images/presign:
     post:
-      summary: Create a POST policy for uploading an image to MinIO/S3 with size validation
+      summary: Create a presigned URL for uploading an image to S3/R2
       operationId: createPresign
       requestBody:
         required: true
@@ -25,7 +25,7 @@ paths:
                   role: main
       responses:
         "200":
-          description: POST policy created
+          description: Presigned upload URL created
           content:
             application/json:
               schema:
@@ -33,17 +33,9 @@ paths:
               examples:
                 ok:
                   value:
-                    uploadUrl: "http://localhost:9000/products"
+                    uploadUrl: "https://storage.example.com/images/drafts/dft_01.../abc123.jpg?X-Amz-Algorithm=..."
                     uploadToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                     expiresIn: 900
-                    formData:
-                      key: "drafts/dft_01JABCD12EF3G45H6JK7MN8PQ/abc123.jpg"
-                      Content-Type: "image/jpeg"
-                      policy: "eyJleHBpcmF0aW9uIjoiMjAyNi0wMS..."
-                      x-amz-algorithm: "AWS4-HMAC-SHA256"
-                      x-amz-credential: "minioadmin/20260124/us-east-1/s3/aws4_request"
-                      x-amz-date: "20260124T120000Z"
-                      x-amz-signature: "a1b2c3d4e5f6..."
         "400":
           description: Bad Request
           content:
@@ -433,25 +425,18 @@ components:
           $ref: "#/components/schemas/ImageRole"
     PresignResponse:
       type: object
-      required: [uploadUrl, uploadToken, expiresIn, formData]
+      required: [uploadUrl, uploadToken, expiresIn]
       properties:
         uploadUrl:
           type: string
           format: uri
-          description: URL to POST the file to (multipart/form-data)
+          description: Presigned PUT URL to upload the file to
         uploadToken:
           type: string
           description: Signed JWT token for confirm endpoint (contains key, ownerType, ownerId, role, etc.)
         expiresIn:
           type: integer
           description: TTL in seconds
-        formData:
-          type: object
-          additionalProperties:
-            type: string
-          description: |
-            Form fields to include with POST upload. Must be sent BEFORE the file field.
-            Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature
     ConfirmRequest:
       type: object
       required: [uploadToken, alt, role]

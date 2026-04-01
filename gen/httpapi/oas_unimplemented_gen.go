@@ -24,7 +24,7 @@ func (UnimplementedHandler) ConfirmUpload(ctx context.Context, req *ConfirmReque
 
 // CreatePresign implements createPresign operation.
 //
-// Create a POST policy for uploading an image to MinIO/S3 with size validation.
+// Create a presigned URL for uploading an image to S3/R2.
 //
 // POST /v1/images/presign
 func (UnimplementedHandler) CreatePresign(ctx context.Context, req *PresignRequest) (r CreatePresignRes, _ error) {

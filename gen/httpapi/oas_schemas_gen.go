@@ -1133,15 +1133,12 @@ func (s *PresignRequestContentType) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/PresignResponse
 type PresignResponse struct {
-	// URL to POST the file to (multipart/form-data).
+	// Presigned PUT URL to upload the file to.
 	UploadUrl url.URL `json:"uploadUrl"`
 	// Signed JWT token for confirm endpoint (contains key, ownerType, ownerId, role, etc.).
 	UploadToken string `json:"uploadToken"`
 	// TTL in seconds.
 	ExpiresIn int `json:"expiresIn"`
-	// Form fields to include with POST upload. Must be sent BEFORE the file field.
-	// Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature.
-	FormData PresignResponseFormData `json:"formData"`
 }
 
 // GetUploadUrl returns the value of UploadUrl.
@@ -1159,11 +1156,6 @@ func (s *PresignResponse) GetExpiresIn() int {
 	return s.ExpiresIn
 }
 
-// GetFormData returns the value of FormData.
-func (s *PresignResponse) GetFormData() PresignResponseFormData {
-	return s.FormData
-}
-
 // SetUploadUrl sets the value of UploadUrl.
 func (s *PresignResponse) SetUploadUrl(val url.URL) {
 	s.UploadUrl = val
@@ -1179,25 +1171,7 @@ func (s *PresignResponse) SetExpiresIn(val int) {
 	s.ExpiresIn = val
 }
 
-// SetFormData sets the value of FormData.
-func (s *PresignResponse) SetFormData(val PresignResponseFormData) {
-	s.FormData = val
-}
-
 func (*PresignResponse) createPresignRes() {}
-
-// Form fields to include with POST upload. Must be sent BEFORE the file field.
-// Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature.
-type PresignResponseFormData map[string]string
-
-func (s *PresignResponseFormData) init() PresignResponseFormData {
-	m := *s
-	if m == nil {
-		m = map[string]string{}
-		*s = m
-	}
-	return m
-}
 
 // RFC7807 Problem Details.
 // Ref: #/components/schemas/Problem

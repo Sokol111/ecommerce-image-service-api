@@ -1607,17 +1607,12 @@ func (s *PresignResponse) encodeFields(e *jx.Encoder) {
 		e.FieldStart("expiresIn")
 		e.Int(s.ExpiresIn)
 	}
-	{
-		e.FieldStart("formData")
-		s.FormData.Encode(e)
-	}
 }
 
-var jsonFieldsNameOfPresignResponse = [4]string{
+var jsonFieldsNameOfPresignResponse = [3]string{
 	0: "uploadUrl",
 	1: "uploadToken",
 	2: "expiresIn",
-	3: "formData",
 }
 
 // Decode decodes PresignResponse from json.
@@ -1665,16 +1660,6 @@ func (s *PresignResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"expiresIn\"")
 			}
-		case "formData":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				if err := s.FormData.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"formData\"")
-			}
 		default:
 			return d.Skip()
 		}
@@ -1685,7 +1670,7 @@ func (s *PresignResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00001111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1727,62 +1712,6 @@ func (s *PresignResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PresignResponse) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s PresignResponseFormData) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields implements json.Marshaler.
-func (s PresignResponseFormData) encodeFields(e *jx.Encoder) {
-	for k, elem := range s {
-		e.FieldStart(k)
-
-		e.Str(elem)
-	}
-}
-
-// Decode decodes PresignResponseFormData from json.
-func (s *PresignResponseFormData) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PresignResponseFormData to nil")
-	}
-	m := s.init()
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		var elem string
-		if err := func() error {
-			v, err := d.Str()
-			elem = string(v)
-			if err != nil {
-				return err
-			}
-			return nil
-		}(); err != nil {
-			return errors.Wrapf(err, "decode field %q", k)
-		}
-		m[string(k)] = elem
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode PresignResponseFormData")
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s PresignResponseFormData) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PresignResponseFormData) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

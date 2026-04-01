@@ -35,7 +35,7 @@ type Invoker interface {
 	ConfirmUpload(ctx context.Context, request *ConfirmRequest) (ConfirmUploadRes, error)
 	// CreatePresign invokes createPresign operation.
 	//
-	// Create a POST policy for uploading an image to MinIO/S3 with size validation.
+	// Create a presigned URL for uploading an image to S3/R2.
 	//
 	// POST /v1/images/presign
 	CreatePresign(ctx context.Context, request *PresignRequest) (CreatePresignRes, error)
@@ -183,7 +183,7 @@ func (c *Client) sendConfirmUpload(ctx context.Context, request *ConfirmRequest)
 
 // CreatePresign invokes createPresign operation.
 //
-// Create a POST policy for uploading an image to MinIO/S3 with size validation.
+// Create a presigned URL for uploading an image to S3/R2.
 //
 // POST /v1/images/presign
 func (c *Client) CreatePresign(ctx context.Context, request *PresignRequest) (CreatePresignRes, error) {

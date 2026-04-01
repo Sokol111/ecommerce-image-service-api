@@ -178,7 +178,7 @@ func (s *Server) handleConfirmUploadRequest(args [0]string, argsEscaped bool, w 
 
 // handleCreatePresignRequest handles createPresign operation.
 //
-// Create a POST policy for uploading an image to MinIO/S3 with size validation.
+// Create a presigned URL for uploading an image to S3/R2.
 //
 // POST /v1/images/presign
 func (s *Server) handleCreatePresignRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -275,7 +275,7 @@ func (s *Server) handleCreatePresignRequest(args [0]string, argsEscaped bool, w 
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    CreatePresignOperation,
-			OperationSummary: "Create a POST policy for uploading an image to MinIO/S3 with size validation",
+			OperationSummary: "Create a presigned URL for uploading an image to S3/R2",
 			OperationID:      "createPresign",
 			Body:             request,
 			RawBody:          rawBody,

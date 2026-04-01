@@ -374,7 +374,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						switch method {
 						case "POST":
 							r.name = CreatePresignOperation
-							r.summary = "Create a POST policy for uploading an image to MinIO/S3 with size validation"
+							r.summary = "Create a presigned URL for uploading an image to S3/R2"
 							r.operationID = "createPresign"
 							r.operationGroup = ""
 							r.pathPattern = "/v1/images/presign"

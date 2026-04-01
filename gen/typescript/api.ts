@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.1.4
+ * OpenAPI spec version: 1.1.5
  */
 import type {
   ConfirmRequest,
@@ -20,7 +20,7 @@ import type {
 
 
 /**
- * @summary Create a POST policy for uploading an image to MinIO/S3 with size validation
+ * @summary Create a presigned URL for uploading an image to S3/R2
  */
 export type createPresignResponse200 = {
   data: PresignResponse

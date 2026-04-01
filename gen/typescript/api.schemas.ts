@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Image Service API
  * API for managing images
- * OpenAPI spec version: 1.1.4
+ * OpenAPI spec version: 1.1.5
  */
 export type OwnerType = typeof OwnerType[keyof typeof OwnerType];
 
@@ -98,24 +98,13 @@ export interface PresignRequest {
   role: ImageRole;
 }
 
-/**
- * Form fields to include with POST upload. Must be sent BEFORE the file field.
-Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature
-
- */
-export type PresignResponseFormData = {[key: string]: string};
-
 export interface PresignResponse {
-  /** URL to POST the file to (multipart/form-data) */
+  /** Presigned PUT URL to upload the file to */
   uploadUrl: string;
   /** Signed JWT token for confirm endpoint (contains key, ownerType, ownerId, role, etc.) */
   uploadToken: string;
   /** TTL in seconds */
   expiresIn: number;
-  /** Form fields to include with POST upload. Must be sent BEFORE the file field.
-Includes: key, Content-Type, policy, x-amz-algorithm, x-amz-credential, x-amz-date, x-amz-signature
- */
-  formData: PresignResponseFormData;
 }
 
 export interface ConfirmRequest {
