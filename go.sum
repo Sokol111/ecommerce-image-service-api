@@ -1,5 +1,5 @@
-github.com/Sokol111/ecommerce-commons v0.8.1 h1:FOOeitQWNZ5URWDqHUa3QiBqTGDjBADSCe+2CVinEHs=
-github.com/Sokol111/ecommerce-commons v0.8.1/go.mod h1:bYr1qvnRHvUGiHhHykdf0QlWE0fldWtTad/fan+2On8=
+github.com/Sokol111/ecommerce-commons v0.8.3 h1:NdP/i2XGAme+LPqbIngzIpp9GCzs5ulTUkpXnE5Thqw=
+github.com/Sokol111/ecommerce-commons v0.8.3/go.mod h1:xCOB11yt4bpVyIuhTL/R0mReHqdzaX2SV2Q/YWqwTtg=
 github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=
 github.com/cenkalti/backoff/v5 v5.0.3/go.mod h1:rkhZdG3JZukswDf7f0cwqPNk4K0sa+F97BxZthm/crw=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
