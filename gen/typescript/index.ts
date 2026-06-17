@@ -1,2 +1,1 @@
-export * from './api.js';
-export * from './api.schemas.js';
+export * from './image/v1/image_pb.js';

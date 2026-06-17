@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package image.v1;
+
+option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/connect/image/v1;imagev1";
+
+import "google/protobuf/timestamp.proto";
+
+// ==================== ENUMS ====================
+
+enum OwnerType {
+  OWNER_TYPE_UNSPECIFIED = 0;
+  OWNER_TYPE_DRAFT = 1;
+  OWNER_TYPE_PRODUCT = 2;
+  OWNER_TYPE_USER = 3;
+}
+
+enum ImageRole {
+  IMAGE_ROLE_UNSPECIFIED = 0;
+  IMAGE_ROLE_MAIN = 1;
+  IMAGE_ROLE_GALLERY = 2;
+  IMAGE_ROLE_OTHER = 3;
+}
+
+enum ImageStatus {
+  IMAGE_STATUS_UNSPECIFIED = 0;
+  IMAGE_STATUS_UPLOADED = 1;
+  IMAGE_STATUS_READY = 2;
+  IMAGE_STATUS_DELETED = 3;
+}
+
+enum ImageContentType {
+  IMAGE_CONTENT_TYPE_UNSPECIFIED = 0;
+  IMAGE_CONTENT_TYPE_JPEG = 1;
+  IMAGE_CONTENT_TYPE_PNG = 2;
+  IMAGE_CONTENT_TYPE_WEBP = 3;
+  IMAGE_CONTENT_TYPE_AVIF = 4;
+}
+
+enum ImageFit {
+  IMAGE_FIT_UNSPECIFIED = 0;
+  IMAGE_FIT_COVER = 1;
+  IMAGE_FIT_CONTAIN = 2;
+  IMAGE_FIT_FILL = 3;
+  IMAGE_FIT_INSIDE = 4;
+  IMAGE_FIT_OUTSIDE = 5;
+}
+
+enum ImageFormat {
+  IMAGE_FORMAT_UNSPECIFIED = 0;
+  IMAGE_FORMAT_ORIGINAL = 1;
+  IMAGE_FORMAT_WEBP = 2;
+  IMAGE_FORMAT_AVIF = 3;
+  IMAGE_FORMAT_JPEG = 4;
+  IMAGE_FORMAT_PNG = 5;
+}
+
+// ==================== ENTITIES ====================
+
+message ImageVariant {
+  string name = 1;
+  string key = 2;
+  int32 width = 3;
+  int32 height = 4;
+  string mime = 5;
+  int64 size = 6;
+}
+
+message Image {
+  string id = 1;
+  OwnerType owner_type = 2;
+  string owner_id = 3;
+  ImageRole role = 4;
+  string key = 5;
+  optional string url = 6;
+  string alt = 7;
+  string mime = 8;
+  int64 size = 9;
+  optional string hash = 10;
+  ImageStatus status = 11;
+  repeated ImageVariant variants = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp modified_at = 14;
+}
+
+// ==================== REQUESTS ====================
+
+message CreatePresignRequest {
+  OwnerType owner_type = 1;
+  string owner_id = 2;
+  string filename = 3;
+  ImageContentType content_type = 4;
+  int64 size = 5;
+  ImageRole role = 6;
+}
+
+message ConfirmUploadRequest {
+  string upload_token = 1;
+  string alt = 2;
+  ImageRole role = 3;
+  optional string checksum = 4;
+}
+
+message GetImageRequest {
+  string id = 1;
+}
+
+message DeleteImageRequest {
+  string id = 1;
+  optional bool hard = 2;
+}
+
+message GetDeliveryUrlRequest {
+  string id = 1;
+  optional string variant = 2;
+  optional int32 w = 3;
+  optional int32 h = 4;
+  optional ImageFit fit = 5;
+  optional ImageFormat format = 6;
+  optional int32 quality = 7;
+  optional double dpr = 8;
+  optional int32 ttl_seconds = 9;
+}
+
+message PromoteImagesRequest {
+  optional string draft_id = 1;
+  string product_id = 2;
+  bool move = 3;
+  repeated string images = 4;
+}
+
+// ==================== RESPONSES ====================
+
+message CreatePresignResponse {
+  string upload_url = 1;
+  string upload_token = 2;
+  int32 expires_in = 3;
+}
+
+message ConfirmUploadResponse {
+  Image image = 1;
+}
+
+message GetImageResponse {
+  Image image = 1;
+}
+
+message DeleteImageResponse {}
+
+message GetDeliveryUrlResponse {
+  string url = 1;
+  optional google.protobuf.Timestamp expires_at = 2;
+}
+
+message PromoteImagesResponse {
+  repeated Image promoted = 1;
+}
+
+// ==================== SERVICE ====================
+
+service ImageService {
+  rpc CreatePresign(CreatePresignRequest) returns (CreatePresignResponse);
+  rpc ConfirmUpload(ConfirmUploadRequest) returns (ConfirmUploadResponse);
+  rpc GetImage(GetImageRequest) returns (GetImageResponse);
+  rpc DeleteImage(DeleteImageRequest) returns (DeleteImageResponse);
+  rpc GetDeliveryUrl(GetDeliveryUrlRequest) returns (GetDeliveryUrlResponse);
+  rpc PromoteImages(PromoteImagesRequest) returns (PromoteImagesResponse);
+}
