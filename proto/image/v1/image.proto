@@ -134,7 +134,7 @@ message PromoteImagesRequest {
 message CreatePresignResponse {
   string upload_url = 1;
   string upload_token = 2;
-  int32 expires_in = 3;
+  int64 expires_in = 3;
 }
 
 message ConfirmUploadResponse {
