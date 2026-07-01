@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package image.v1;
+
+option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/events/image/v1;eventsv1";
+
+import "google/protobuf/timestamp.proto";
+
+// ==================== KAFKA EVENTS ====================
+
+// Emitted when a product image is promoted to the main image.
+// Consumer services should update their local product image data with this information.
+// Topic: catalog.product.events (partition key: product_id)
+message ProductImagePromotedEvent {
+  string image_id = 1;
+  string product_id = 2;
+  string small_image_url = 3;
+  string large_image_url = 4;
+  google.protobuf.Timestamp promoted_at = 5;
+}
