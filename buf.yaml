@@ -2,7 +2,7 @@ version: v2
 
 modules:
   - path: proto/rpc
-    name: buf.build/sokol111/catalog-api
+    name: buf.build/sokol111/image-api
   - path: proto/events
 
 deps:
