@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/Sokol111/ecommerce-image-service-api/gen/connect/image/v1"
+	v1 "github.com/Sokol111/ecommerce-image-service-api/gen/go/image/v1"
 	http "net/http"
 	strings "strings"
 )

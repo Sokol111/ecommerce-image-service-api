@@ -1,5 +1,5 @@
 EVENTS_PROTO_DIR ?= proto/events
-EVENTS_OUT ?= gen
+EVENTS_OUT ?= gen/go
 
 # =============================================================================
 # Events (buf + protoc-gen-go)

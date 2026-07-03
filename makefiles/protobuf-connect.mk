@@ -1,7 +1,11 @@
-# ---- Configuration (defaults, can be overridden) ----
-RPC_PROTO_DIR ?= proto/rpc
-PROTO_DIR ?= proto
-CONNECT_OUT ?= gen/connect
+# ---- Configuration (auto-detected, can be overridden) ----
+# Auto-detect the service name from proto/ subdirectory (e.g. proto/tenant/ -> tenant)
+_PROTO_SUBDIR := $(shell ls proto 2>/dev/null | head -1)
+
+RPC_PROTO_DIR   ?= proto/$(_PROTO_SUBDIR)/v1
+EVENTS_PROTO_DIR ?= proto/$(_PROTO_SUBDIR)/events
+PROTO_DIR       ?= proto
+CONNECT_OUT     ?= gen/go/$(_PROTO_SUBDIR)/v1
 CONNECT_PACKAGE ?= connect
 
 # ---- Binaries ----

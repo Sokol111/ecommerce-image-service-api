@@ -5,7 +5,7 @@ import (
 	"go.uber.org/fx"
 
 	grpcclient "github.com/Sokol111/ecommerce-commons/pkg/grpc/client"
-	imagev1 "github.com/Sokol111/ecommerce-image-service-api/gen/connect/image/v1"
+	imagev1 "github.com/Sokol111/ecommerce-image-service-api/gen/go/image/v1"
 )
 
 // Module wires a native gRPC client for ImageService.

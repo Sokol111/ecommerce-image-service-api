@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package image.v1;
 
-option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/connect/image/v1;imagev1";
+option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/go/image/v1;imagev1";
 
 import "google/protobuf/timestamp.proto";
 
