@@ -1,5 +1,5 @@
 version: v2
 plugins:
   - local: protoc-gen-go
-    out: gen/events
+    out: gen
     opt: paths=source_relative

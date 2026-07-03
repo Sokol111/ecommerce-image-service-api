@@ -9,6 +9,8 @@ MAKEFLAGS += --no-builtin-rules
 # ---- Variables ----
 # Path to this repo's makefiles
 MAKEFILES_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))makefiles
+RPC_PROTO_DIR    = proto/image/v1
+EVENTS_PROTO_DIR = proto/image/events
 PROJECT_NAME ?= $(shell basename $(CURDIR))
 BUF ?= $(shell which buf 2>/dev/null || echo "$$(go env GOPATH)/bin/buf")
 

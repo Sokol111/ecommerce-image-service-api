@@ -1,9 +1,8 @@
 version: v2
 
 modules:
-  - path: proto/rpc
+  - path: proto
     name: buf.build/sokol111/image-api
-  - path: proto/events
 
 deps:
   - buf.build/bufbuild/protovalidate

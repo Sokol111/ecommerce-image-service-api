@@ -1,4 +1,5 @@
 # ---- Configuration (defaults, can be overridden) ----
+RPC_PROTO_DIR ?= proto/rpc
 PROTO_DIR ?= proto
 CONNECT_OUT ?= gen/connect
 CONNECT_PACKAGE ?= connect
@@ -13,7 +14,7 @@ CONNECT_PACKAGE ?= connect
 .PHONY: connect-generate
 connect-generate: _connect-check-tools _connect-clean-dir ## Generate Go Connect code from proto using buf
 	@echo "$(COLOR_BLUE)→ Generating Connect code...$(COLOR_RESET)"
-	$(BUF) generate proto/rpc --template buf.gen.yaml
+	$(BUF) generate --path $(RPC_PROTO_DIR) --template buf.gen.yaml
 	@echo "$(COLOR_GREEN)✓ Connect generation complete!$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)  Generated files in $(CONNECT_OUT)/:$(COLOR_RESET)"
 	@find $(CONNECT_OUT) -name '*.go' | head -20 | sed 's/^/    /'

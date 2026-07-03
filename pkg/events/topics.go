@@ -1,7 +1,7 @@
 package events
 
 import (
-	eventsv1 "github.com/Sokol111/ecommerce-image-service-api/gen/events/image/v1"
+	eventsv1 "github.com/Sokol111/ecommerce-image-service-api/gen/image/events/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )

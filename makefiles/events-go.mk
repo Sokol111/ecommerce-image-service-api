@@ -1,5 +1,5 @@
 EVENTS_PROTO_DIR ?= proto/events
-EVENTS_OUT ?= gen/events
+EVENTS_OUT ?= gen
 
 # =============================================================================
 # Events (buf + protoc-gen-go)
@@ -8,7 +8,7 @@ EVENTS_OUT ?= gen/events
 .PHONY: events-generate
 events-generate: _events-check-tools ## Generate Go types from Kafka event proto files
 	@echo "$(COLOR_BLUE)→ Generating event types...$(COLOR_RESET)"
-	$(BUF) generate $(EVENTS_PROTO_DIR) --template buf.gen.events.yaml
+	$(BUF) generate --path $(EVENTS_PROTO_DIR) --template buf.gen.events.yaml
 	@echo "$(COLOR_GREEN)✓ Event generation complete!$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)  Generated files in $(EVENTS_OUT)/:$(COLOR_RESET)"
 	@find $(EVENTS_OUT) -name '*.pb.go' | sed 's/^/    /'
