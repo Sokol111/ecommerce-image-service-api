@@ -1,0 +1,19 @@
+go.mod
+  s_b0011afa5ead3a::t_afdb06d3799a83 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "3c9925abfb22d0d452423ad96821e36569a43fe3",
+  "prompts": {},
+  "sessions": {
+    "s_b0011afa5ead3a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0943e6c06ffe5G0EwTRgXpqXw6",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Sokol111 <igorsokol111@gmail.com>"
+    }
+  }
+}
