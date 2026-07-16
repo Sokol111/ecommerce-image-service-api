@@ -2,9 +2,10 @@ syntax = "proto3";
 
 package image.v1;
 
-option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/go/image/v1;imagev1";
-
+import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Sokol111/ecommerce-image-service-api/gen/go/image/v1;imagev1";
 
 // ==================== ENUMS ====================
 
@@ -86,47 +87,83 @@ message Image {
 // ==================== REQUESTS ====================
 
 message CreatePresignRequest {
-  OwnerType owner_type = 1;
-  string owner_id = 2;
-  string filename = 3;
-  ImageContentType content_type = 4;
-  int64 size = 5;
-  ImageRole role = 6;
+  OwnerType owner_type = 1 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  string owner_id = 2 [(buf.validate.field).string.uuid = true];
+  string filename = 3 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+  ImageContentType content_type = 4 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  int64 size = 5 [(buf.validate.field).int64.gt = 0];
+  ImageRole role = 6 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
 }
 
 message ConfirmUploadRequest {
-  string upload_token = 1;
-  string alt = 2;
-  ImageRole role = 3;
-  optional string checksum = 4;
+  string upload_token = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 4096
+  }];
+  string alt = 2 [(buf.validate.field).string.max_len = 255];
+  ImageRole role = 3 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  optional string checksum = 4 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 128
+  }];
 }
 
 message GetImageRequest {
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
 }
 
 message DeleteImageRequest {
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
   optional bool hard = 2;
 }
 
 message GetDeliveryUrlRequest {
-  string id = 1;
-  optional string variant = 2;
-  optional int32 w = 3;
-  optional int32 h = 4;
-  optional ImageFit fit = 5;
-  optional ImageFormat format = 6;
-  optional int32 quality = 7;
-  optional double dpr = 8;
-  optional int32 ttl_seconds = 9;
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  optional string variant = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 100
+  }];
+  optional int32 w = 3 [(buf.validate.field).int32.gt = 0];
+  optional int32 h = 4 [(buf.validate.field).int32.gt = 0];
+  optional ImageFit fit = 5 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  optional ImageFormat format = 6 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  optional int32 quality = 7 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+  optional double dpr = 8 [(buf.validate.field).double = {
+    gt: 0
+    lte: 5
+  }];
+  optional int32 ttl_seconds = 9 [(buf.validate.field).int32.gt = 0];
 }
 
 message PromoteImagesRequest {
-  optional string draft_id = 1;
-  string product_id = 2;
+  optional string draft_id = 1 [(buf.validate.field).string.uuid = true];
+  string product_id = 2 [(buf.validate.field).string.uuid = true];
   bool move = 3;
-  repeated string images = 4;
+  repeated string images = 4 [(buf.validate.field).repeated.items.string.uuid = true];
 }
 
 // ==================== RESPONSES ====================
