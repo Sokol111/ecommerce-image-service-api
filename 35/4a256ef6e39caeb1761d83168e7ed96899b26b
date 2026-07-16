@@ -1,0 +1,29 @@
+buf.lock
+  s_b0011afa5ead3a::t_f260ae2c1fecec 1-6
+gen/go/image/v1/image.pb.go
+  s_d8ed0c62eb91dd::t_c31c3ad01bec52 10,1294-1358,1360-1522,1524-1537
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "354a256ef6e39caeb1761d83168e7ed96899b26b",
+  "prompts": {},
+  "sessions": {
+    "s_b0011afa5ead3a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0943e6c06ffe5G0EwTRgXpqXw6",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Sokol111 <igorsokol111@gmail.com>"
+    },
+    "s_d8ed0c62eb91dd": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_094ccc86dffeGQNgdfbGAn3XIg",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Sokol111 <igorsokol111@gmail.com>"
+    }
+  }
+}
