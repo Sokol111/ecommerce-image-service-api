@@ -5,7 +5,7 @@ go 1.26.5
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260709200747-435963d16310.1
 	connectrpc.com/connect v1.20.0
-	github.com/Sokol111/ecommerce-commons v0.8.9
+	github.com/Sokol111/ecommerce-commons v0.8.10
 	go.uber.org/fx v1.24.0
 	google.golang.org/grpc v1.83.0
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af
@@ -44,9 +44,9 @@ require (
 	go.mongodb.org/mongo-driver/v2 v2.8.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.69.0 // indirect
-	go.opentelemetry.io/otel v1.44.1-0.20260803145922-48db2c659c3b // indirect
-	go.opentelemetry.io/otel/metric v1.44.1-0.20260625150014-c84013202f01 // indirect
-	go.opentelemetry.io/otel/trace v1.44.1-0.20260625150014-c84013202f01 // indirect
+	go.opentelemetry.io/otel v1.45.0 // indirect
+	go.opentelemetry.io/otel/metric v1.45.0 // indirect
+	go.opentelemetry.io/otel/trace v1.45.0 // indirect
 	go.uber.org/dig v1.19.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
