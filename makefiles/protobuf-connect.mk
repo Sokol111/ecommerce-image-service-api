@@ -31,9 +31,9 @@ connect-clean: ## Remove generated Connect files
 	@echo "$(COLOR_GREEN)✓ Cleaned $(CONNECT_OUT)/$(COLOR_RESET)"
 
 .PHONY: connect-breaking
-connect-breaking: _connect-check-tools ## Check for breaking proto changes against main
+connect-breaking: _connect-check-tools ## Check for breaking proto changes against master
 	@echo "$(COLOR_BLUE)→ Checking for breaking changes...$(COLOR_RESET)"
-	$(BUF) breaking --against '.git#branch=main'
+	$(BUF) breaking --against '.git#branch=master'
 	@echo "$(COLOR_GREEN)✓ No breaking changes detected$(COLOR_RESET)"
 
 .PHONY: connect-install-tools

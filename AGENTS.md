@@ -8,7 +8,7 @@ system. It holds no business logic. It contains:
 
 - **Protobuf sources** (`proto/`) — the only files you hand-edit.
 - **Generated code** (`gen/go`, `gen/typescript`) — never hand-edit; regenerate instead.
-- **Thin Go helpers** (`pkg/`) that build on the generated code: an `fx` gRPC client module
+- **Thin Go helpers** (`pkg/`) that build on the generated code: an Fx-configured gRPC client
   and a Kafka topic registry.
 
 Consumers: the image service (implements the `ImageService` RPC server, produces the events),
@@ -28,7 +28,7 @@ on the next generation and break the release pipeline.
 make generate            # DEFAULT WORKFLOW: lint + generate TS + Go events + Go Connect/gRPC
 make lint                # buf lint only (STANDARD rules)
 make format              # buf format -w
-make connect-breaking    # check proto for breaking changes against .git#branch=main
+make connect-breaking    # check proto for breaking changes against master
 make tidy                # go mod tidy
 make update-proto-deps   # buf dep update (refresh buf.lock)
 make connect-install-tools   # install buf + protoc-gen-{go,connect-go,go-grpc} at pinned versions
@@ -70,9 +70,9 @@ belong in the proto as protovalidate options.
 
 ## The `pkg/` helpers
 
-- `pkg/client/grpc.go` — `client.Module()` returns an `fx.Option` wiring a native gRPC
+- `pkg/fxconfig/grpc.go` — `client.NewGrpcClientsModule()` returns an `fx.Option` wiring a native gRPC
   `ImageServiceClient`, reading config from koanf key `image.grpc`. This is how consumer
-  services get an image client — import the module, don't construct the client by hand.
+  services get an image client — compose the module, don't construct the client by hand.
 - `pkg/events/topics.go` — maps proto event message full-names to Kafka topic names
   (`ProductImagePromotedEvent` → `catalog.product.events`) and exposes `TopicFor(msg)`.
   **When you add a new event message, register it in `topicMap`** or `TopicFor` panics at
