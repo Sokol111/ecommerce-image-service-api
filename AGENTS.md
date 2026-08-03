@@ -6,7 +6,7 @@ This is the **API contract repo** for `ecommerce-image-service` — the image up
 service (MinIO + imgproxy locally, Cloudflare R2 in production) in a CQRS + event-driven
 system. It holds no business logic. It contains:
 
-- **Protobuf sources** (`proto/`) — the only files you hand-edit.
+- **Protobuf sources** (`proto/`) — edit these for contract changes.
 - **Generated code** (`gen/go`, `gen/typescript`) — never hand-edit; regenerate instead.
 - **Thin Go helpers** (`pkg/`) that build on the generated code: an Fx-configured gRPC client
   and a Kafka topic registry.
@@ -21,6 +21,9 @@ client).
 **Never hand-edit anything under `gen/`.** All Go and TypeScript there is produced by `buf`
 from `proto/`. Edit the `.proto` and run `make generate`. Hand edits are silently overwritten
 on the next generation and break the release pipeline.
+
+`pkg/fxconfig/` and `pkg/events/` are hand-written code. Update the gRPC Fx module when client
+wiring changes, and update `topicMap` when adding an event message.
 
 ## Commands
 
