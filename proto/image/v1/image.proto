@@ -91,7 +91,10 @@ message CreatePresignRequest {
     defined_only: true
     not_in: [0]
   }];
-  string owner_id = 2 [(buf.validate.field).string.uuid = true];
+  string owner_id = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
   string filename = 3 [(buf.validate.field).string = {
     min_len: 1
     max_len: 255
