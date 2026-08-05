@@ -1,0 +1,19 @@
+proto/image/v1/image.proto
+  s_71ade8efceed27::t_a61d7426a0d07d 94-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "2167948573ced4b2854d8aed93fb83b242cf2e7f",
+  "prompts": {},
+  "sessions": {
+    "s_71ade8efceed27": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_02dfb72e0ffe2DSQl0vQNbaXMB",
+        "model": "kimi-k2.7-code"
+      },
+      "human_author": "Sokol111 <igorsokol111@gmail.com>"
+    }
+  }
+}
