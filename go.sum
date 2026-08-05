@@ -10,8 +10,8 @@ github.com/MicahParks/keyfunc/v3 v3.8.1 h1:VR3jlEs2wz1xGjvUUwUHeoB+eJ6gUnBrpnIBy
 github.com/MicahParks/keyfunc/v3 v3.8.1/go.mod h1:LcorJ0sz2tZGvgZqIfaeyLkJmM+kxIfRDu8dFY0TAas=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
-github.com/Sokol111/ecommerce-commons v0.8.10 h1:+3UnShhukXjF1VlikKpLhoL77aCY9rdKSSg3U9FpoME=
-github.com/Sokol111/ecommerce-commons v0.8.10/go.mod h1:t66AhQJohvNndHU+1xaWhLSYRmtIPpGS3RKueat02ls=
+github.com/Sokol111/ecommerce-commons v0.8.16 h1:gT8hohR90lxrml9eIMuCfxVnqnXTDVkBEZDmo57noJU=
+github.com/Sokol111/ecommerce-commons v0.8.16/go.mod h1:fAfJbRy5SQbrrF8kH4P0tWj8KPo1bdzT4/YwlhcqWl8=
 github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK343L8=
 github.com/cenkalti/backoff/v4 v4.3.0/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
